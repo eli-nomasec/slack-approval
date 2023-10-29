@@ -35,6 +35,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const core = __importStar(require("@actions/core"));
 const bolt_1 = require("@slack/bolt");
 const web_api_1 = require("@slack/web-api");
+const rest_1 = require("@octokit/rest");
+const octokit = new rest_1.Octokit({ auth: `token ${process.env.GH_SECRET}` });
 const token = process.env.SLACK_BOT_TOKEN || "";
 const signingSecret = process.env.SLACK_SIGNING_SECRET || "";
 const slackAppToken = process.env.SLACK_APP_TOKEN || "";
@@ -140,10 +142,18 @@ function run() {
                 });
             }))();
             app.action("slack-approval-approve", ({ ack, client, body, logger }) => __awaiter(this, void 0, void 0, function* () {
-                var _a, _b, _c;
+                var _a, _b, _c, _d;
                 yield ack();
                 try {
-                    const response_blocks = (_a = body.message) === null || _a === void 0 ? void 0 : _a.blocks;
+                    const ownerRepo = (_a = process.env.GITHUB_REPOSITORY) === null || _a === void 0 ? void 0 : _a.split("/");
+                    const owner = ownerRepo[0];
+                    const repo = ownerRepo[1];
+                    yield octokit.repos.createDispatchEvent({
+                        owner,
+                        repo,
+                        event_type: "approved-deployment", // Customize this event type as needed
+                    });
+                    const response_blocks = (_b = body.message) === null || _b === void 0 ? void 0 : _b.blocks;
                     response_blocks.pop();
                     response_blocks.push({
                         type: "section",
@@ -153,8 +163,8 @@ function run() {
                         },
                     });
                     yield client.chat.update({
-                        channel: ((_b = body.channel) === null || _b === void 0 ? void 0 : _b.id) || "",
-                        ts: ((_c = body.message) === null || _c === void 0 ? void 0 : _c.ts) || "",
+                        channel: ((_c = body.channel) === null || _c === void 0 ? void 0 : _c.id) || "",
+                        ts: ((_d = body.message) === null || _d === void 0 ? void 0 : _d.ts) || "",
                         blocks: response_blocks,
                     });
                 }
@@ -164,10 +174,10 @@ function run() {
                 process.exit(0);
             }));
             app.action("slack-approval-reject", ({ ack, client, body, logger }) => __awaiter(this, void 0, void 0, function* () {
-                var _d, _e, _f;
+                var _e, _f, _g;
                 yield ack();
                 try {
-                    const response_blocks = (_d = body.message) === null || _d === void 0 ? void 0 : _d.blocks;
+                    const response_blocks = (_e = body.message) === null || _e === void 0 ? void 0 : _e.blocks;
                     response_blocks.pop();
                     response_blocks.push({
                         type: "section",
@@ -177,8 +187,8 @@ function run() {
                         },
                     });
                     yield client.chat.update({
-                        channel: ((_e = body.channel) === null || _e === void 0 ? void 0 : _e.id) || "",
-                        ts: ((_f = body.message) === null || _f === void 0 ? void 0 : _f.ts) || "",
+                        channel: ((_f = body.channel) === null || _f === void 0 ? void 0 : _f.id) || "",
+                        ts: ((_g = body.message) === null || _g === void 0 ? void 0 : _g.ts) || "",
                         blocks: response_blocks,
                     });
                 }

@@ -1,7 +1,9 @@
 import * as core from "@actions/core";
 import { App, BlockAction, LogLevel } from "@slack/bolt";
 import { WebClient } from "@slack/web-api";
+import { Octokit } from "@octokit/rest";
 
+const octokit = new Octokit({ auth: `token ${process.env.GH_SECRET}` });
 const token = process.env.SLACK_BOT_TOKEN || "";
 const signingSecret = process.env.SLACK_SIGNING_SECRET || "";
 const slackAppToken = process.env.SLACK_APP_TOKEN || "";
@@ -115,6 +117,16 @@ async function run(): Promise<void> {
       async ({ ack, client, body, logger }) => {
         await ack();
         try {
+          const ownerRepo = process.env.GITHUB_REPOSITORY?.split("/") as any;
+          const owner = ownerRepo[0];
+          const repo = ownerRepo[1];
+
+          await octokit.repos.createDispatchEvent({
+            owner,
+            repo,
+            event_type: "approved-deployment", // Customize this event type as needed
+          });
+
           const response_blocks = (<BlockAction>body).message?.blocks;
           response_blocks.pop();
           response_blocks.push({
