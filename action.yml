@@ -1,6 +1,6 @@
-name: slack-approval
+name: slack-approver
 description: Custom action to send approval request to Slack from GitHub Actions
-author: varu3
+author: danshapir
 runs:
   using: "node16"
   main: "dist/index.js"
