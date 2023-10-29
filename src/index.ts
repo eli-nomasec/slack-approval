@@ -1,9 +1,14 @@
 import * as core from "@actions/core";
 import { App, BlockAction, LogLevel } from "@slack/bolt";
 import { WebClient } from "@slack/web-api";
+import fetch from "node-fetch";
+
 import { Octokit } from "@octokit/rest";
 
-const octokit = new Octokit({ auth: `token ${process.env.GH_SECRET}` });
+const octokit = new Octokit({
+  auth: `token ${process.env.GH_SECRET}`,
+  request: { fetch },
+});
 const token = process.env.SLACK_BOT_TOKEN || "";
 const signingSecret = process.env.SLACK_SIGNING_SECRET || "";
 const slackAppToken = process.env.SLACK_APP_TOKEN || "";

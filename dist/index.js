@@ -31,12 +31,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const core = __importStar(require("@actions/core"));
 const bolt_1 = require("@slack/bolt");
 const web_api_1 = require("@slack/web-api");
+const node_fetch_1 = __importDefault(require("node-fetch"));
 const rest_1 = require("@octokit/rest");
-const octokit = new rest_1.Octokit({ auth: `token ${process.env.GH_SECRET}` });
+const octokit = new rest_1.Octokit({
+    auth: `token ${process.env.GH_SECRET}`,
+    request: { fetch: node_fetch_1.default },
+});
 const token = process.env.SLACK_BOT_TOKEN || "";
 const signingSecret = process.env.SLACK_SIGNING_SECRET || "";
 const slackAppToken = process.env.SLACK_APP_TOKEN || "";

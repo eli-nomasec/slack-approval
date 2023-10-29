@@ -505,6 +505,11 @@ cookie@0.5.0:
   resolved "https://registry.npmjs.org/cookie/-/cookie-0.5.0.tgz"
   integrity sha512-YZ3GUyn/o8gfKJlnlX7g7xq4gyO6OSuhGPKaaGssGB2qgDUS0gPgtTvoyZLTt9Ab6dC4hfc9dV5arkvc/OCmrw==
 
+data-uri-to-buffer@^4.0.0:
+  version "4.0.1"
+  resolved "https://pkgs.dev.azure.com/precise-finance/precise-finance/_packaging/precise-npm/npm/registry/data-uri-to-buffer/-/data-uri-to-buffer-4.0.1.tgz"
+  integrity sha1-2P6ysogeak9YwuCKz9Dig04mIi4=
+
 debug@2.6.9:
   version "2.6.9"
   resolved "https://registry.npmjs.org/debug/-/debug-2.6.9.tgz"
@@ -672,6 +677,14 @@ express@^4.16.4:
     utils-merge "1.0.1"
     vary "~1.1.2"
 
+fetch-blob@^3.1.2, fetch-blob@^3.1.4:
+  version "3.2.0"
+  resolved "https://pkgs.dev.azure.com/precise-finance/precise-finance/_packaging/precise-npm/npm/registry/fetch-blob/-/fetch-blob-3.2.0.tgz"
+  integrity sha1-8JuNS71Frcbwwgt+eH55PjCdzOk=
+  dependencies:
+    node-domexception "^1.0.0"
+    web-streams-polyfill "^3.0.3"
+
 finalhandler@1.2.0:
   version "1.2.0"
   resolved "https://registry.npmjs.org/finalhandler/-/finalhandler-1.2.0.tgz"
@@ -712,6 +725,13 @@ form-data@^4.0.0:
     asynckit "^0.4.0"
     combined-stream "^1.0.8"
     mime-types "^2.1.12"
+
+formdata-polyfill@^4.0.10:
+  version "4.0.10"
+  resolved "https://pkgs.dev.azure.com/precise-finance/precise-finance/_packaging/precise-npm/npm/registry/formdata-polyfill/-/formdata-polyfill-4.0.10.tgz"
+  integrity sha1-JIB8McnUAuACqz2McgFEzriEhCM=
+  dependencies:
+    fetch-blob "^3.1.2"
 
 forwarded@0.2.0:
   version "0.2.0"
@@ -1069,12 +1089,26 @@ negotiator@0.6.3:
   resolved "https://registry.npmjs.org/negotiator/-/negotiator-0.6.3.tgz"
   integrity sha512-+EUsqGPLsM+j/zdChZjsnX51g4XrHFOIXwfnCVPGlQk/k5giakcKsuxCObBRu6DSm9opw/O6slWbJdghQM4bBg==
 
+node-domexception@^1.0.0:
+  version "1.0.0"
+  resolved "https://pkgs.dev.azure.com/precise-finance/precise-finance/_packaging/precise-npm/npm/registry/node-domexception/-/node-domexception-1.0.0.tgz"
+  integrity sha1-aIjbRqH3HAt2s/dVUBa2P+ZHZuU=
+
 node-fetch@^2.6.7:
-  version "2.6.7"
-  resolved "https://registry.npmjs.org/node-fetch/-/node-fetch-2.6.7.tgz"
-  integrity sha512-ZjMPFEfVx5j+y2yF35Kzx5sF7kDzxuDj6ziH4FFbOp87zKDZNx8yExJIb05OGF4Nlt9IHFIMBkRl41VdvcNdbQ==
+  version "2.7.0"
+  resolved "https://pkgs.dev.azure.com/precise-finance/precise-finance/_packaging/precise-npm/npm/registry/node-fetch/-/node-fetch-2.7.0.tgz"
+  integrity sha1-0PD6bj4twdJ+/NitmdVQvalNGH0=
   dependencies:
     whatwg-url "^5.0.0"
+
+node-fetch@^3.3.2:
+  version "3.3.2"
+  resolved "https://pkgs.dev.azure.com/precise-finance/precise-finance/_packaging/precise-npm/npm/registry/node-fetch/-/node-fetch-3.3.2.tgz"
+  integrity sha1-0eiJus33M7T/OyskPrehKGagt4s=
+  dependencies:
+    data-uri-to-buffer "^4.0.0"
+    fetch-blob "^3.1.4"
+    formdata-polyfill "^4.0.10"
 
 object-inspect@^1.12.2, object-inspect@^1.9.0:
   version "1.12.2"
@@ -1323,8 +1357,8 @@ toidentifier@1.0.1:
 
 tr46@~0.0.3:
   version "0.0.3"
-  resolved "https://registry.npmjs.org/tr46/-/tr46-0.0.3.tgz"
-  integrity sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw==
+  resolved "https://pkgs.dev.azure.com/precise-finance/precise-finance/_packaging/precise-npm/npm/registry/tr46/-/tr46-0.0.3.tgz"
+  integrity sha1-gYT9NH2snNwYWZLzpmIuFLnZq2o=
 
 tsscmp@^1.0.6:
   version "1.0.6"
@@ -1384,15 +1418,20 @@ vary@~1.1.2:
   resolved "https://registry.npmjs.org/vary/-/vary-1.1.2.tgz"
   integrity sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==
 
+web-streams-polyfill@^3.0.3:
+  version "3.2.1"
+  resolved "https://pkgs.dev.azure.com/precise-finance/precise-finance/_packaging/precise-npm/npm/registry/web-streams-polyfill/-/web-streams-polyfill-3.2.1.tgz"
+  integrity sha1-ccJxjFK0X9Sdvu6IY0s6YM6rQqY=
+
 webidl-conversions@^3.0.0:
   version "3.0.1"
-  resolved "https://registry.npmjs.org/webidl-conversions/-/webidl-conversions-3.0.1.tgz"
-  integrity sha512-2JAn3z8AR6rjK8Sm8orRC0h/bcl/DqL7tRPdGZ4I1CjdF+EaMLmYxBHyXuKL849eucPFhvBoxMsflfOb8kxaeQ==
+  resolved "https://pkgs.dev.azure.com/precise-finance/precise-finance/_packaging/precise-npm/npm/registry/webidl-conversions/-/webidl-conversions-3.0.1.tgz"
+  integrity sha1-JFNCdeKnvGvnvIZhHMFq4KVlSHE=
 
 whatwg-url@^5.0.0:
   version "5.0.0"
-  resolved "https://registry.npmjs.org/whatwg-url/-/whatwg-url-5.0.0.tgz"
-  integrity sha512-saE57nupxk6v3HY35+jzBwYa0rKSy0XR8JSxZPwgLr7ys0IBzhGviA1/TUGJLmSVqs8pb9AnvICXEuOHLprYTw==
+  resolved "https://pkgs.dev.azure.com/precise-finance/precise-finance/_packaging/precise-npm/npm/registry/whatwg-url/-/whatwg-url-5.0.0.tgz"
+  integrity sha1-lmRU6HZUYuN2RNNib2dCzotwll0=
   dependencies:
     tr46 "~0.0.3"
     webidl-conversions "^3.0.0"
