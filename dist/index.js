@@ -49,7 +49,7 @@ function run() {
             const runnerOS = process.env.RUNNER_OS || "";
             const actor = process.env.GITHUB_ACTOR || "";
             const branch = process.env.GITHUB_REF || "";
-            const sha = process.env.GITHUB_SHA || "";
+            const sha = process.env.COMMIT_SHA || "";
             const customId = JSON.stringify({
                 repo: github_repos,
                 run_id: run_id,
