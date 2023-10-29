@@ -1,28 +1,9 @@
 import * as core from "@actions/core";
-import { App, BlockAction, LogLevel } from "@slack/bolt";
 import { WebClient } from "@slack/web-api";
-import fetch from "node-fetch";
 
-import { Octokit } from "@octokit/rest";
-
-const octokit = new Octokit({
-  auth: `token ${process.env.GH_SECRET}`,
-  request: { fetch },
-});
 const token = process.env.SLACK_BOT_TOKEN || "";
-const signingSecret = process.env.SLACK_SIGNING_SECRET || "";
-const slackAppToken = process.env.SLACK_APP_TOKEN || "";
 const channel_id = process.env.SLACK_CHANNEL_ID || "";
 const env = process.env.DEPLOYMENT_ENV || "";
-
-const app = new App({
-  token: token,
-  signingSecret: signingSecret,
-  appToken: slackAppToken,
-  socketMode: true,
-  port: 3000,
-  logLevel: LogLevel.DEBUG,
-});
 
 async function run(): Promise<void> {
   try {
@@ -37,156 +18,69 @@ async function run(): Promise<void> {
     const actor = process.env.GITHUB_ACTOR || "";
     const branch = process.env.GITHUB_REF || "";
 
-    (async () => {
-      await web.chat.postMessage({
-        channel: channel_id,
-        text: "GitHub Actions Approval request",
-        blocks: [
-          {
-            type: "section",
-            text: {
-              type: "mrkdwn",
-              text: `GitHub Actions Approval Request`,
-            },
+    const sha = process.env.GITHUB_SHA || "";
+    const customId = JSON.stringify({
+      repo: github_repos,
+      run_id: run_id,
+      env: env,
+      sha: sha,
+    });
+
+    await web.chat.postMessage({
+      channel: channel_id,
+      text: "GitHub Actions Approval request",
+      blocks: [
+        {
+          type: "section",
+          text: {
+            type: "mrkdwn",
+            text: "GitHub Actions Approval Request",
           },
-          {
-            type: "section",
-            fields: [
-              {
-                type: "mrkdwn",
-                text: `*GitHub Actor:*\n${actor}`,
+        },
+        {
+          type: "section",
+          fields: [
+            { type: "mrkdwn", text: `*GitHub Actor:*\n${actor}` },
+            { type: "mrkdwn", text: `*Repos:*\n${github_server_url}/${github_repos}` },
+            { type: "mrkdwn", text: `*Branch:* ${branch}` },
+            { type: "mrkdwn", text: `*Env:* ${env}` },
+            { type: "mrkdwn", text: `*Actions URL:*\n${actionsUrl}` },
+            { type: "mrkdwn", text: `*GITHUB_RUN_ID:*\n${run_id}` },
+            { type: "mrkdwn", text: `*Workflow:*\n${workflow}` },
+            { type: "mrkdwn", text: `*RunnerOS:*\n${runnerOS}` },
+          ],
+        },
+        {
+          type: "actions",
+          block_id: customId,
+          elements: [
+            {
+              type: "button",
+              text: {
+                type: "plain_text",
+                emoji: true,
+                text: "Approve",
               },
-              {
-                type: "mrkdwn",
-                text: `*Repos:*\n${github_server_url}/${github_repos}`,
-              },
-              {
-                type: "mrkdwn",
-                text: `*Branch:* ${branch}`,
-              },
-              {
-                type: "mrkdwn",
-                text: `*Env:* ${env}`,
-              },
-              {
-                type: "mrkdwn",
-                text: `*Actions URL:*\n${actionsUrl}`,
-              },
-              {
-                type: "mrkdwn",
-                text: `*GITHUB_RUN_ID:*\n${run_id}`,
-              },
-              {
-                type: "mrkdwn",
-                text: `*Workflow:*\n${workflow}`,
-              },
-              {
-                type: "mrkdwn",
-                text: `*RunnerOS:*\n${runnerOS}`,
-              },
-            ],
-          },
-          {
-            type: "actions",
-            elements: [
-              {
-                type: "button",
-                text: {
-                  type: "plain_text",
-                  emoji: true,
-                  text: "Approve",
-                },
-                style: "primary",
-                value: "approve",
-                action_id: "slack-approval-approve",
-              },
-              {
-                type: "button",
-                text: {
-                  type: "plain_text",
-                  emoji: true,
-                  text: "Reject",
-                },
-                style: "danger",
-                value: "reject",
-                action_id: "slack-approval-reject",
-              },
-            ],
-          },
-        ],
-      });
-    })();
-
-    app.action(
-      "slack-approval-approve",
-      async ({ ack, client, body, logger }) => {
-        await ack();
-        try {
-          const ownerRepo = process.env.GITHUB_REPOSITORY?.split("/") as any;
-          const owner = ownerRepo[0];
-          const repo = ownerRepo[1];
-
-          await octokit.repos.createDispatchEvent({
-            owner,
-            repo,
-            event_type: "approved-deployment", // Customize this event type as needed
-          });
-
-          const response_blocks = (<BlockAction>body).message?.blocks;
-          response_blocks.pop();
-          response_blocks.push({
-            type: "section",
-            text: {
-              type: "mrkdwn",
-              text: `Approved by <@${body.user.id}> `,
+              style: "primary",
+              value: "approve",
+              action_id: "slack-approval-approve",
             },
-          });
-
-          await client.chat.update({
-            channel: body.channel?.id || "",
-            ts: (<BlockAction>body).message?.ts || "",
-            blocks: response_blocks,
-          });
-        } catch (error) {
-          logger.error(error);
-        }
-
-        process.exit(0);
-      }
-    );
-
-    app.action(
-      "slack-approval-reject",
-      async ({ ack, client, body, logger }) => {
-        await ack();
-        try {
-          const response_blocks = (<BlockAction>body).message?.blocks;
-          response_blocks.pop();
-          response_blocks.push({
-            type: "section",
-            text: {
-              type: "mrkdwn",
-              text: `Rejected by <@${body.user.id}>`,
+            {
+              type: "button",
+              text: {
+                type: "plain_text",
+                emoji: true,
+                text: "Reject",
+              },
+              style: "danger",
+              value: "reject",
+              action_id: "slack-approval-reject",
             },
-          });
+          ],
+        },
+      ],
+    });
 
-          await client.chat.update({
-            channel: body.channel?.id || "",
-            ts: (<BlockAction>body).message?.ts || "",
-            blocks: response_blocks,
-          });
-        } catch (error) {
-          logger.error(error);
-        }
-
-        process.exit(1);
-      }
-    );
-
-    (async () => {
-      await app.start(3000);
-      console.log("Waiting Approval reaction.....");
-    })();
   } catch (error) {
     if (error instanceof Error) core.setFailed(error.message);
   }
