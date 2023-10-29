@@ -1,5 +1,5 @@
 import * as core from "@actions/core";
-import { WebClient } from "@slack/web-api";
+import { MrkdwnElement, PlainTextElement, WebClient } from "@slack/web-api";
 
 const token = process.env.SLACK_BOT_TOKEN || "";
 const channel_id = process.env.SLACK_CHANNEL_ID || "";
@@ -17,6 +17,9 @@ async function run(): Promise<void> {
     const runnerOS = process.env.RUNNER_OS || "";
     const actor = process.env.GITHUB_ACTOR || "";
     const branch = process.env.GITHUB_REF || "";
+    const pr_title = process.env.PR_TITLE || undefined;
+    const pr_id = process.env.PR_ID || undefined;
+    const commit_message = process.env.COMMIT_MESSAGE || undefined;
 
     const sha = process.env.COMMIT_SHA || "";
     const customId = JSON.stringify({
@@ -26,29 +29,51 @@ async function run(): Promise<void> {
       sha: sha,
     });
 
+    let fields: (PlainTextElement | MrkdwnElement)[] = [
+      { type: "mrkdwn", text: `*GitHub Actor:*\n${actor}` },
+      { type: "mrkdwn", text: `*Branch:* ${branch}` },
+      { type: "mrkdwn", text: `*Env:* ${env}` },
+    ];
+
+    // Add PR details only if they exist:
+    if (pr_title) {
+      fields.push({ type: "mrkdwn", text: `*PR_TITLE:*\n${pr_title}` });
+    }
+    if (pr_id) {
+      fields.push({ type: "mrkdwn", text: `*PR_ID:*\n${pr_id}` });
+    }
+    if (commit_message) {
+      fields.push({
+        type: "mrkdwn",
+        text: `*COMMIT_MESSAGE:*\n${commit_message}`,
+      });
+    }
+
+    fields.push(
+      { type: "mrkdwn", text: `*Actions URL:*\n${actionsUrl}` },
+      { type: "mrkdwn", text: `*GITHUB_RUN_ID:*\n${run_id}` },
+      {
+        type: "mrkdwn",
+        text: `*Repos:*\n${github_server_url}/${github_repos}`,
+      },
+      { type: "mrkdwn", text: `*Workflow:*\n${workflow}` },
+      { type: "mrkdwn", text: `*RunnerOS:*\n${runnerOS}` }
+    );
+
     await web.chat.postMessage({
       channel: channel_id,
-      text: "GitHub Actions Approval request",
+      text: `GitHub Actions Approval Request ${github_repos}, ${branch}, ${env}`,
       blocks: [
         {
           type: "section",
           text: {
             type: "mrkdwn",
-            text: "GitHub Actions Approval Request",
+            text: `GitHub Actions Approval Request ${github_repos}, ${branch}, ${env}`,
           },
         },
         {
           type: "section",
-          fields: [
-            { type: "mrkdwn", text: `*GitHub Actor:*\n${actor}` },
-            { type: "mrkdwn", text: `*Repos:*\n${github_server_url}/${github_repos}` },
-            { type: "mrkdwn", text: `*Branch:* ${branch}` },
-            { type: "mrkdwn", text: `*Env:* ${env}` },
-            { type: "mrkdwn", text: `*Actions URL:*\n${actionsUrl}` },
-            { type: "mrkdwn", text: `*GITHUB_RUN_ID:*\n${run_id}` },
-            { type: "mrkdwn", text: `*Workflow:*\n${workflow}` },
-            { type: "mrkdwn", text: `*RunnerOS:*\n${runnerOS}` },
-          ],
+          fields: fields,
         },
         {
           type: "actions",
@@ -80,7 +105,6 @@ async function run(): Promise<void> {
         },
       ],
     });
-
   } catch (error) {
     if (error instanceof Error) core.setFailed(error.message);
   }
