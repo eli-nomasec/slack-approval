@@ -56,7 +56,7 @@ async function run(): Promise<void> {
       { type: "mrkdwn", text: `*RunnerOS:*\n${runnerOS}` }
     );
 
-    await web.chat.postMessage({
+    const response = await web.chat.postMessage({
       channel: channel_id,
       text: `GitHub Actions Approval Request\n*${github_repos}*\n${branch}, ${env}`,
       blocks: [
@@ -64,7 +64,7 @@ async function run(): Promise<void> {
           type: "section",
           text: {
             type: "mrkdwn",
-            text: `GitHub Actions Approval Request ${github_repos}, ${branch}, ${env}`,
+            text: `GitHub Actions Approval Request\n*${github_repos}*\n${branch}, ${env}`,
           },
         },
         {
@@ -101,6 +101,12 @@ async function run(): Promise<void> {
         },
       ],
     });
+    
+    const ts = response.ts;
+    const slackMessageLink = `https://slack.com/app_redirect?channel=${channel_id}&message=${ts}`;
+
+    core.info(`Direct link to the Slack message: ${slackMessageLink}`);
+
   } catch (error) {
     if (error instanceof Error) core.setFailed(error.message);
   }

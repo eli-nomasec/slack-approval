@@ -77,7 +77,7 @@ function run() {
                 type: "mrkdwn",
                 text: `*Repos:*\n${github_server_url}/${github_repos}`,
             }, { type: "mrkdwn", text: `*Workflow:*\n${workflow}` }, { type: "mrkdwn", text: `*RunnerOS:*\n${runnerOS}` });
-            yield web.chat.postMessage({
+            const response = yield web.chat.postMessage({
                 channel: channel_id,
                 text: `GitHub Actions Approval Request\n*${github_repos}*\n${branch}, ${env}`,
                 blocks: [
@@ -85,7 +85,7 @@ function run() {
                         type: "section",
                         text: {
                             type: "mrkdwn",
-                            text: `GitHub Actions Approval Request ${github_repos}, ${branch}, ${env}`,
+                            text: `GitHub Actions Approval Request\n*${github_repos}*\n${branch}, ${env}`,
                         },
                     },
                     {
@@ -122,6 +122,9 @@ function run() {
                     },
                 ],
             });
+            const ts = response.ts;
+            const slackMessageLink = `https://slack.com/app_redirect?channel=${channel_id}&message=${ts}`;
+            core.info(`Direct link to the Slack message: ${slackMessageLink}`);
         }
         catch (error) {
             if (error instanceof Error)
