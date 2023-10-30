@@ -17,8 +17,7 @@ async function run(): Promise<void> {
     const runnerOS = process.env.RUNNER_OS || "";
     const actor = process.env.GITHUB_ACTOR || "";
     const branch = process.env.GITHUB_REF || "";
-    const pr_title = process.env.PR_TITLE || undefined;
-    const pr_id = process.env.PR_ID || undefined;
+    const pr_link = process.env.PR_LINK || undefined;
     const commit_message = process.env.COMMIT_MESSAGE || undefined;
 
     const sha = process.env.COMMIT_SHA || "";
@@ -36,11 +35,8 @@ async function run(): Promise<void> {
     ];
 
     // Add PR details only if they exist:
-    if (pr_title) {
-      fields.push({ type: "mrkdwn", text: `*PR_TITLE:*\n${pr_title}` });
-    }
-    if (pr_id) {
-      fields.push({ type: "mrkdwn", text: `*PR_ID:*\n${pr_id}` });
+    if (pr_link) {
+      fields.push({ type: "mrkdwn", text: `*Pull Request:*\n${pr_link}` });
     }
     if (commit_message) {
       fields.push({
