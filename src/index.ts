@@ -58,7 +58,7 @@ async function run(): Promise<void> {
 
     await web.chat.postMessage({
       channel: channel_id,
-      text: `GitHub Actions Approval Request ${github_repos}, ${branch}, ${env}`,
+      text: `GitHub Actions Approval Request\n*${github_repos}*\n${branch}, ${env}`,
       blocks: [
         {
           type: "section",
