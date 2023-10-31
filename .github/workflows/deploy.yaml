@@ -37,7 +37,7 @@ jobs:
         step: start
         token: ${{ secrets.GH_SECRET }}
         env: ${{ github.event.client_payload.env }}
-        ref: ${{ github.event.client_payload.ref }}
+        ref: ${{ github.event.client_payload.trigger_sha }}
 
     - name: update deployment status
       uses: bobheadxi/deployments@v1
