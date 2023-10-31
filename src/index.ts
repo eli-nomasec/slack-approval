@@ -26,6 +26,7 @@ async function run(): Promise<void> {
       run_id: run_id,
       env: env,
       sha: sha,
+      ref: branch,
     });
 
     let fields: (PlainTextElement | MrkdwnElement)[] = [

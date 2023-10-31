@@ -57,6 +57,7 @@ function run() {
                 run_id: run_id,
                 env: env,
                 sha: sha,
+                ref: branch,
             });
             let fields = [
                 { type: "mrkdwn", text: `*GitHub Actor:*\n${actor}` },
