@@ -4,6 +4,7 @@ import { MrkdwnElement, PlainTextElement, WebClient } from "@slack/web-api";
 const token = process.env.SLACK_BOT_TOKEN || "";
 const channel_id = process.env.SLACK_CHANNEL_ID || "";
 const env = process.env.DEPLOYMENT_ENV || "";
+const workspace = process.env.SLACK_WORKSPACE || "";
 
 async function run(): Promise<void> {
   try {
@@ -104,7 +105,9 @@ async function run(): Promise<void> {
     });
     
     const ts = response.ts;
-    const slackMessageLink = `https://slack.com/app_redirect?channel=${channel_id}&message=${ts}`;
+    const formattedTs = "p" + ts.split(".").join("");
+
+    const slackMessageLink = `https://${workspace}.slack.com/archives/${channel_id}/${formattedTs}`;
 
     core.info(`Direct link to the Slack message: ${slackMessageLink}`);
 
