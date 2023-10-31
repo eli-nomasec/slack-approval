@@ -22,12 +22,13 @@ async function run(): Promise<void> {
     const commit_message = process.env.COMMIT_MESSAGE || undefined;
 
     const sha = process.env.COMMIT_SHA || "";
+    const triggerSha = process.env.GITHUB_SHA || "";
     const customId = JSON.stringify({
       repo: github_repos,
       run_id: run_id,
       env: env,
       sha: sha,
-      ref: branch,
+      triggerSha: triggerSha,
     });
 
     let fields: (PlainTextElement | MrkdwnElement)[] = [
