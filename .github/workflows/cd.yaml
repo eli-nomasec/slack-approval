@@ -184,7 +184,7 @@ jobs:
 
      
     - name: send approval
-      uses: Precise-Finance/slack-approval@v2.13
+      uses: Precise-Finance/slack-approval@v2.14
       env:
         SLACK_APP_TOKEN:  ${{ secrets.SLACK_APP_TOKEN }}
         SLACK_WORKSPACE: precisefinance
@@ -232,7 +232,7 @@ jobs:
         fi
       
     - name: send approval
-      uses: Precise-Finance/slack-approval@v2.13
+      uses: Precise-Finance/slack-approval@v2.14
       env:
         SLACK_APP_TOKEN:  ${{ secrets.SLACK_APP_TOKEN }}
         SLACK_WORKSPACE: precisefinance
