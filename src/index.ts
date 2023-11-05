@@ -20,6 +20,7 @@ async function run(): Promise<void> {
     const branch = process.env.GITHUB_REF || "";
     const pr_link = process.env.PR_LINK || undefined;
     const commit_message = process.env.COMMIT_MESSAGE || undefined;
+    const confirmationRequired = process.env.CONFIRMATION === 'true';
 
     const sha = process.env.COMMIT_SHA || "";
     const triggerSha = process.env.GITHUB_SHA || "";
@@ -59,6 +60,73 @@ async function run(): Promise<void> {
       { type: "mrkdwn", text: `*RunnerOS:*\n${runnerOS}` }
     );
 
+    const approveButton = {
+      type: "button",
+      text: {
+        type: "plain_text",
+        emoji: true,
+        text: "Approve",
+      },
+      style: "primary",
+      value: "approve",
+      action_id: "slack-approval-approve",
+      confirm: undefined,
+    };
+    
+    const rejectButton = {
+      type: "button",
+      text: {
+        type: "plain_text",
+        emoji: true,
+        text: "Reject",
+      },
+      style: "danger",
+      value: "reject",
+      action_id: "slack-approval-reject",
+      confirm: undefined,
+    };
+    
+    if (confirmationRequired) {
+      approveButton.confirm = {
+        title: {
+          type: "plain_text",
+          text: "Are you sure?"
+        },
+        text: {
+          type: "mrkdwn",
+          text: "Do you really want to approve this action?"
+        },
+        confirm: {
+          type: "plain_text",
+          text: "Yes, Approve"
+        },
+        deny: {
+          type: "plain_text",
+          text: "Cancel"
+        },
+      };
+    
+      rejectButton.confirm = {
+        title: {
+          type: "plain_text",
+          text: "Are you sure?"
+        },
+        text: {
+          type: "mrkdwn",
+          text: "Do you really want to reject this action?"
+        },
+        confirm: {
+          type: "plain_text",
+          text: "Yes, Reject"
+        },
+        deny: {
+          type: "plain_text",
+          text: "Cancel"
+        },
+      };
+    }
+    
+
     const response = await web.chat.postMessage({
       channel: channel_id,
       text: `GitHub Actions Approval Request\n*${github_repos}*\n${branch}, ${env}`,
@@ -77,30 +145,7 @@ async function run(): Promise<void> {
         {
           type: "actions",
           block_id: customId,
-          elements: [
-            {
-              type: "button",
-              text: {
-                type: "plain_text",
-                emoji: true,
-                text: "Approve",
-              },
-              style: "primary",
-              value: "approve",
-              action_id: "slack-approval-approve",
-            },
-            {
-              type: "button",
-              text: {
-                type: "plain_text",
-                emoji: true,
-                text: "Reject",
-              },
-              style: "danger",
-              value: "reject",
-              action_id: "slack-approval-reject",
-            },
-          ],
+          elements: [approveButton, rejectButton],
         },
       ],
     });
