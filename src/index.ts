@@ -5,9 +5,9 @@ import process from "process";
 const { App } = bolt;
 import dotenv from 'dotenv';
 
-dotenv.config();
+const isProd = process.env.NODE_ENV !== 'local';
 
-const isProd = process.env.NODE_ENV === 'production';
+dotenv.config();
 
 const inputsFromEnv: { [key: string]: string } = {
   'slack-bot-token': process.env.SLACK_BOT_TOKEN || "",

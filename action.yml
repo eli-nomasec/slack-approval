@@ -1,10 +1,29 @@
-name: slack-approver
-description: Custom action to send approval request to Slack from GitHub Actions
-author: danshapir
+name: 'Slack Approval'
+description: 'Sends an approval message to Slack and waits for approval or auto-approves after a timeout.'
+inputs:
+  slack-bot-token:
+    description: 'Slack Bot Token'
+    required: true
+  slack-channel-id:
+    description: 'Slack Channel ID'
+    required: true
+  deployment-env:
+    description: 'Deployment Environment'
+    required: true
+  slack-workspace:
+    description: 'Slack Workspace'
+    required: true
+  confirmation:
+    description: 'Require Confirmation'
+    required: false
+    default: 'false'
+  auto-approve-timeout:
+    description: 'Time in seconds to wait before auto-approving if no response is received'
+    required: false
+    default: '0'
+outputs:
+  approval-status:
+    description: 'The approval status (approved/rejected)'
 runs:
-  using: "node20"
-  main: "dist/index.js"
-branding:
-  icon: plus
-  color: green
-
+  using: 'node20'
+  main: 'dist/index.js'
